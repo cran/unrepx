@@ -1,0 +1,19 @@
+### exportPattern("^[[:alpha:]]+")
+
+importFrom("stats", 
+           "median", "contr.helmert", "contr.poly", "qnorm", "quantile", "rnorm")
+importFrom("graphics",
+           "abline", "axis", "barplot", "identify", "lines",
+           "par", "plot", "points", "text", "title")
+importFrom("grDevices", "dev.interactive", "recordGraphics")
+
+# we'll export stuff explicitly
+export(daniel.paper, 
+       dot.plot, dot.id, dot.mod,
+       hnplot, parplot, refplot,
+       PSE, ME,
+       eff.test, ref.dist,
+       bikeEff, pdEff, shnkEff, shnkDisp, viseEff,
+       yates, gyates)
+
+S3method("print", "eff_refdist")
