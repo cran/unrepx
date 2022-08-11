@@ -1,4 +1,8 @@
 NEWS file for unrepx package
 
+version 1.0-2
+    Workarounds for dot.plot() and refplot() in non-interactive environments
+    so that the vignette can be built in R 4.3
+
 Version 1.0
     Initial submission

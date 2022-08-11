@@ -1,14 +1,14 @@
 ---
+title: "**unrepx** package for R"
+subtitle: "Analysis of unreplicated experiments"
+author: "Russ Lenth"
+date: "Version `r packageVersion('unrepx')` -- `r utils::packageDescription('unrepx')$Date`"
 vignette: >
   %\VignetteIndexEntry{Overview of the unrepx package}
-  %\VignetteEngine{knitr::knitr}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
 ---
 
-# **unrepx** package for R: 
-## Analysis of unreplicated experiments
-
-Developer/maintainer:
-Russ Lenth, The University of Iowa, `russell-lenth@uiowa.edu`
 
 ## Introduction
 The **unrepx** package provides much of what one needs to analyze basic unreplicated
@@ -52,7 +52,11 @@ title("Half-normal plot of the pilot-plant effects")
 By default, a reference line is added (see the section below on statistics for details). The dots are colored blue for positive and red for negative effects. Visually, it appears that the *T* and *TK* effects are the most active, as they appear to be outliers. Ordinary normal plots are possible too, but we strongly discourage using them as they can be misleading.
 
 A reference plot is a dotplot of the effects, along with a reference curve. By default, the absolute effects are plotted along with a half-normal curve:
-```{r, fig.height=3, fig.width=5}
+```{r, eval = FALSE}
+refplot(pilotEff, ID = 10)
+title("Reference plot of the pilot-plant effects")
+```
+```{r, echo = FALSE, fig.height=3, fig.width=5}
 refplot(pilotEff, ID = 10)
 title("Reference plot of the pilot-plant effects")
 ```

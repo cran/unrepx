@@ -166,8 +166,11 @@ dot.plot = function(x, pch = 16, cex.dot = 1, spacing = 1, xlab, xlim = range(x)
     env$orig.x = x # used by dot.id()
     env$cex.dot = cex.dot
     
+    RG = if(dev.interactive()) recordGraphics
+    else function(expr, list, env) expr
+    
     # draw points and support resizing in both directions
-    recordGraphics({
+    RG({
         cxy = par("cxy") * cex.dot
         bins = as.integer(1.25 * xspan / cxy[1])
         xinc = diff(pretty(x, n = bins)[1:2])
@@ -175,7 +178,7 @@ dot.plot = function(x, pch = 16, cex.dot = 1, spacing = 1, xlab, xlim = range(x)
         freq = table(rx)
         xx = rep(as.numeric(names(freq)), freq) [idx]
         yy = unlist(lapply(freq, seq_len)) [idx]
-        yinc = 0.5 * spacing * cxy[2]
+        yinc = env$yinc = 0.5 * spacing * cxy[2]
         yyv = ylow + yinc * (yy - .5)
         points(xx, yyv, pch = pch, cex = env$cex.dot, ...)
         clip = which(yyv > ytop)
@@ -201,7 +204,7 @@ dot.plot = function(x, pch = 16, cex.dot = 1, spacing = 1, xlab, xlim = range(x)
 # with modify = TRUE, previously identified points are used but user can specify different height etc. 
 dot.id = function(env, height.id = 2, cex.id = 1, col.id = "black") {
     if (!dev.interactive())
-        stop("Graphics devide is not interactive")
+        stop("Graphics device is not interactive")
     ylow = par("usr")[3]
     x = env$orig.x
     pts = identify(x, rep(ylow, length(x)), pos = FALSE, plot = FALSE)
@@ -218,7 +221,7 @@ dot.id = function(env, height.id = 2, cex.id = 1, col.id = "black") {
 
 dot.mod = function(env, ...) {
     if (!dev.interactive())
-        stop("Graphics devide is not interactive")
+        stop("Graphics device is not interactive")
     dots = list(...)
     names(dots) = sapply(names(dots), function(nm) match.arg(nm, c("cex.dot", "height.id", "col.id", "cex.id")))
     for (nm in names(dots))
@@ -258,15 +261,16 @@ refplot = function(effects, ref = TRUE, half = TRUE, method = "Zahn",
     else
         curvetype = "normal"
         
+    ytop = ifelse(guides, 1.23, 1)
+    ylow = par("usr")[3]
+    yscal = (par("usr")[4] - ylow) / ytop
+    
     if(ref) {
         stderr = PSE(effects, method)
         x = seq(-3 * stderr, 3 * stderr, len = 81)
         if (half)
              x = x[41:81]
  
-        ytop = ifelse(guides, 1.23, 1)
-        ylow = par("usr")[3]
-        yscal = (par("usr")[4] - ylow) / ytop
         if (curvetype == "normal") {
             lines(x, ylow + yscal * exp(-.5*(x / stderr)^2))
             lines(c(0, 0), ylow + yscal * c(0,1), lty = 2)
@@ -307,6 +311,10 @@ refplot = function(effects, ref = TRUE, half = TRUE, method = "Zahn",
             env$cex.id = 1
             env$col.id = "black"
         }
+    }
+    if(!dev.interactive()) 
+        { # show the text since we won't be re-drawing
+        text(env$x.id, ylow + yscal * env$height.id *env$yinc, names(env$x.id))
     }
 
     invisible(env)
